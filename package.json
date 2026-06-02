@@ -1,0 +1,27 @@
+{
+  "name": "flash-sale-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "High-throughput flash sale platform (take-home project)",
+  "workspaces": [
+    "server",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently -n server,web -c green,cyan \"npm:dev:server\" \"npm:dev:web\"",
+    "dev:server": "npm --workspace server run dev",
+    "dev:web": "npm --workspace frontend run dev",
+    "build": "npm --workspace server run build && npm --workspace frontend run build",
+    "start": "npm --workspace server run start",
+    "test": "npm --workspace server run test",
+    "stress": "node stress/stress.mjs",
+    "stress:verify": "node stress/verify-correctness.mjs"
+  },
+  "devDependencies": {
+    "autocannon": "^7.15.0",
+    "concurrently": "^9.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,32 @@
+services:
+  # High-throughput atomic concurrency layer (hot path).
+  redis:
+    image: redis:7-alpine
+    # appendonly yes => AOF persistence so inventory state survives restarts (fault tolerance)
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 3s
+      retries: 10
+
+  # Durable system of record for orders / inventory (the "M" in MERN).
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  redis-data:
+  mongo-data:
